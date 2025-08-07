@@ -20,6 +20,7 @@ struct ContentView: View {
                 .font(.headline)
             DebouncedTextField("Enter a time", text: $editingText, wait: .seconds(0.2))
                 .onChange(of: editingText) {
+                    guard editingText != "" else { isValid = true; return }
                     let result = matchDate(from: editingText)
                     
                     self.isValid = result != nil
