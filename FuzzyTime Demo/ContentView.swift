@@ -78,10 +78,22 @@ enum DateGrammar: String, CaseIterable {
         
         guard let matchedHour else { return nil }
         
-        let hour = matchedHour + (matchedAmpm == "pm" ? 12 : 0)
+        let hour = calculateHour(matchedHour, matchedAmpm)
         let minute = matchedMinute ?? 0
         
         return Calendar.current.date(from: .init(hour: hour, minute: minute))
+    }
+    
+    private func calculateHour(_ matchedHour: Int, _ matchedAmpm: String?) -> Int {
+        guard let matchedAmpm else { return matchedHour }
+        
+        return switch (matchedHour == 12, matchedAmpm == "pm") {
+        case (true, true): matchedHour
+        case (true, false): matchedHour - 12
+        case (false, true): matchedHour + 12
+        case (false, false): matchedHour
+        }
+        
     }
     
     private func fetchHour(string: String, match: Regex<Regex<AnyRegexOutput>.RegexOutput>.Match) -> Int? {
